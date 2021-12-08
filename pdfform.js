@@ -427,7 +427,7 @@ function transform(buf, fields) {
 			if (ft_name == 'Tx') {
 				n.map.V = '' + value;
 			} else if (ft_name == 'Btn') {
-				n.map.AS = n.map.V = n.map.DV = value ? new minipdf_lib.Name('Yes') : new minipdf_lib.Name('Off');
+				n.map.AS = n.map.V = n.map.DV = value ? new minipdf_lib.Name('On') : new minipdf_lib.Name('Off');
 			} else if (ft_name == 'Ch') {
 				n.map.V =  '' + value;
 			} else if (ft_name == 'Sig') {
