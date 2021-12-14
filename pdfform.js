@@ -304,9 +304,9 @@ function visit_acroform_fields(doc, callback) {
 					options: n.map.Opt,
 				};
 				callback(n);
-			} else if (n.map && n.map.Kids) {
+			} else if (n.map && n.map.Kids && !(n.map.FT && n.map.FT.name == 'Btn')) {
 				to_visit.push.apply(to_visit, n.map.Kids);
-			} else if (n.map && n.map.Type && n.map.Type.name == 'Annot' && n.map.T) {
+			} else if (n.map && ((n.map.Type && n.map.Type.name == 'Annot') || (n.map.FT && n.map.FT.name == 'Btn')) && n.map.T) {
 				callback(n);
 			}
 		}
@@ -427,7 +427,22 @@ function transform(buf, fields) {
 			if (ft_name == 'Tx') {
 				n.map.V = '' + value;
 			} else if (ft_name == 'Btn') {
-				n.map.AS = n.map.V = n.map.DV = value ? new minipdf_lib.Name('On') : new minipdf_lib.Name('Off');
+				if(n.map.Kids) {
+					n.map.Kids.some(kid_ref => {
+						const kid = doc.fetch(kid_ref);
+
+						if (value in kid.map.AP.map.N.map) {
+							kid.map.AS = new minipdf_lib.Name(value);
+
+							var kid_e = objects.update(kid_ref, kid);
+							objects.write_object(out, kid_e);
+
+							return true;
+						}
+					});
+				}
+
+				n.map.AS = n.map.V = n.map.DV = value ? new minipdf_lib.Name(value) : new minipdf_lib.Name('Off');
 			} else if (ft_name == 'Ch') {
 				n.map.V =  '' + value;
 			} else if (ft_name == 'Sig') {
