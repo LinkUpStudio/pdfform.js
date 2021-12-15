@@ -427,6 +427,7 @@ function transform(buf, fields) {
 			if (ft_name == 'Tx') {
 				n.map.V = '' + value;
 			} else if (ft_name == 'Btn') {
+				// handle checkboxes and radio buttons (via checkboxes with same names)
 				if(n.map.Kids) {
 					n.map.Kids.some(kid_ref => {
 						const kid = doc.fetch(kid_ref);
